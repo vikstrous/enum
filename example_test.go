@@ -6,7 +6,7 @@ import (
 	"github.com/orsinium-labs/enum"
 )
 
-func ExampleUsage() {
+func ExampleBuilder() {
 	type Color struct {
 		enum.Member
 	}
