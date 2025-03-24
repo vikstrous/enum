@@ -13,7 +13,7 @@ type Color struct {
 }
 
 var (
-	b = enum.NewBuilder[Color]()
+	b      = enum.NewBuilder[Color]()
 	Red    = b.Add("red")
 	Green  = b.Add("green")
 	Blue   = b.Add("blue")
