@@ -56,11 +56,6 @@ func (e Enum[M]) Members() []M {
 	return e.members
 }
 
-// Values returns a slice of values of all members of the enum.
-func (e Enum[M]) Values() []string {
-	return e.memberStrings
-}
-
 // String implements [fmt.Stringer] interface.
 //
 // It returns a comma-separated list of values of the enum members.
