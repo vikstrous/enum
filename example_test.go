@@ -6,18 +6,23 @@ import (
 	"github.com/orsinium-labs/enum"
 )
 
-func ExampleBuilder() {
-	type Color struct {
-		enum.Member
-	}
+type ExampleColor = enum.Member[ExampleValidator]
 
-	var (
-		b      = enum.NewBuilder[Color]()
-		Red    = b.Add("red")
-		Green  = b.Add("green")
-		_      = b.Add("blue")
-		Colors = b.Enum()
-	)
+var (
+	bExample      = enum.NewBuilder[ExampleValidator]()
+	ExampleRed    = bExample.Add("red")
+	ExampleGreen  = bExample.Add("green")
+	_             = bExample.Add("blue")
+	ExampleColors = bExample.Enum()
+)
+
+type ExampleValidator struct{}
+
+func (ExampleValidator) Validate(value string) bool {
+	return ExampleColors.Validate(value)
+}
+
+func ExampleBuilder() {
 
 	fmt.Printf("Enum Members: %s\n", Colors.Members())
 	fmt.Printf("Enum string: %s\n", Colors)
@@ -27,7 +32,9 @@ func ExampleBuilder() {
 		panic(err)
 	}
 	fmt.Printf("Parsed: %s\n", parsed.String())
+	// TODO: How do we do equality?
 	fmt.Printf("Equality: %t\n", Red == parsed)
+
 	// Output: Enum Members: [red green blue]
 	// Enum string: red, green, blue
 	// Member string: green
