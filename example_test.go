@@ -2,33 +2,55 @@ package enum_test
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/orsinium-labs/enum"
 )
 
 func ExampleNew() {
-	type Color enum.Member[string]
+	type Color struct {
+		enum.Member
+	}
 
 	var (
-		Red    = Color{"red"}
-		Green  = Color{"green"}
-		Blue   = Color{"blue"}
-		Colors = enum.New(Red, Green, Blue)
+		b      = enum.NewBuilder[Color]()
+		_      = b.Add("red")
+		_      = b.Add("green")
+		_      = b.Add("blue")
+		Colors = b.Enum()
 	)
 
 	fmt.Printf("%#v\n", Colors)
 	// Output: enum.New(enum_test.Color{"red"}, enum_test.Color{"green"}, enum_test.Color{"blue"})
 }
 
-func ExampleEnum_String() {
-	type Color enum.Member[string]
+func ExampleMember_String() {
+	type Color struct {
+		enum.Member
+	}
 
 	var (
-		Red    = Color{"red"}
-		Green  = Color{"green"}
-		Blue   = Color{"blue"}
-		Colors = enum.New(Red, Green, Blue)
+		b     = enum.NewBuilder[Color]()
+		_     = b.Add("red")
+		Green = b.Add("green")
+		_     = b.Add("blue")
+		_     = b.Enum()
+	)
+
+	fmt.Println(Green.String())
+	// Output: green
+}
+
+func ExampleEnum_String() {
+	type Color struct {
+		enum.Member
+	}
+
+	var (
+		b      = enum.NewBuilder[Color]()
+		_      = b.Add("red")
+		_      = b.Add("green")
+		_      = b.Add("blue")
+		Colors = b.Enum()
 	)
 
 	fmt.Println(Colors)
@@ -36,13 +58,16 @@ func ExampleEnum_String() {
 }
 
 func ExampleEnum_GoString() {
-	type Color enum.Member[string]
+	type Color struct {
+		enum.Member
+	}
 
 	var (
-		Red    = Color{"red"}
-		Green  = Color{"green"}
-		Blue   = Color{"blue"}
-		Colors = enum.New(Red, Green, Blue)
+		b      = enum.NewBuilder[Color]()
+		_      = b.Add("red")
+		_      = b.Add("green")
+		_      = b.Add("blue")
+		Colors = b.Enum()
 	)
 
 	fmt.Printf("%#v\n", Colors)
@@ -50,28 +75,37 @@ func ExampleEnum_GoString() {
 }
 
 func ExampleEnum_Parse() {
-	type Color enum.Member[string]
+	type Color struct {
+		enum.Member
+	}
 
 	var (
-		Red    = Color{"red"}
-		Green  = Color{"green"}
-		Blue   = Color{"blue"}
-		Colors = enum.New(Red, Green, Blue)
+		b      = enum.NewBuilder[Color]()
+		_      = b.Add("red")
+		_      = b.Add("green")
+		_      = b.Add("blue")
+		Colors = b.Enum()
 	)
 
-	parsed := Colors.Parse("red")
+	parsed, err := Colors.Parse("red")
+	if err != nil {
+		panic(err)
+	}
 	fmt.Printf("%#v\n", parsed)
-	// Output: &enum_test.Color{Value:"red"}
+	// Output: enum_test.Color{Member:enum.Member{index:0, value:"red"}}
 }
 
 func ExampleEnum_Contains() {
-	type Color enum.Member[string]
+	type Color struct {
+		enum.Member
+	}
 
 	var (
-		Red    = Color{"red"}
-		Green  = Color{"green"}
-		Blue   = Color{"blue"}
-		Colors = enum.New(Red, Green, Blue)
+		b      = enum.NewBuilder[Color]()
+		Red    = b.Add("red")
+		_      = b.Add("green")
+		_      = b.Add("blue")
+		Colors = b.Enum()
 	)
 
 	contains := Colors.Contains(Red)
@@ -80,13 +114,16 @@ func ExampleEnum_Contains() {
 }
 
 func ExampleEnum_Empty() {
-	type Color enum.Member[string]
+	type Color struct {
+		enum.Member
+	}
 
 	var (
-		Red    = Color{"red"}
-		Green  = Color{"green"}
-		Blue   = Color{"blue"}
-		Colors = enum.New(Red, Green, Blue)
+		b      = enum.NewBuilder[Color]()
+		_      = b.Add("red")
+		_      = b.Add("green")
+		_      = b.Add("blue")
+		Colors = b.Enum()
 	)
 
 	empty := Colors.Empty()
@@ -94,44 +131,35 @@ func ExampleEnum_Empty() {
 	// Output: false
 }
 
-func ExampleEnum_Index() {
-	type Color enum.Member[string]
+func ExampleMember_Index() {
+	type Color struct {
+		enum.Member
+	}
 
 	var (
-		Red    = Color{"red"}
-		Green  = Color{"green"}
-		Blue   = Color{"blue"}
-		Colors = enum.New(Red, Green, Blue)
+		b     = enum.NewBuilder[Color]()
+		_     = b.Add("red")
+		Green = b.Add("green")
+		_     = b.Add("blue")
+		_     = b.Enum()
 	)
 
-	index := Colors.Index(Green)
+	index := Green.Index()
 	fmt.Println(index)
 	// Output: 1
 }
 
-func ExampleEnum_Value() {
-	type Color enum.Member[string]
-
-	var (
-		Red    = Color{"red"}
-		Green  = Color{"green"}
-		Blue   = Color{"blue"}
-		Colors = enum.New(Red, Green, Blue)
-	)
-
-	value := Colors.Value(Green)
-	fmt.Println(value)
-	// Output: green
-}
-
 func ExampleEnum_Len() {
-	type Color enum.Member[string]
+	type Color struct {
+		enum.Member
+	}
 
 	var (
-		Red    = Color{"red"}
-		Green  = Color{"green"}
-		Blue   = Color{"blue"}
-		Colors = enum.New(Red, Green, Blue)
+		b      = enum.NewBuilder[Color]()
+		_      = b.Add("red")
+		_      = b.Add("green")
+		_      = b.Add("blue")
+		Colors = b.Enum()
 	)
 
 	length := Colors.Len()
@@ -140,28 +168,34 @@ func ExampleEnum_Len() {
 }
 
 func ExampleEnum_Members() {
-	type Color enum.Member[string]
+	type Color struct {
+		enum.Member
+	}
 
 	var (
-		Red    = Color{"red"}
-		Green  = Color{"green"}
-		Blue   = Color{"blue"}
-		Colors = enum.New(Red, Green, Blue)
+		b      = enum.NewBuilder[Color]()
+		_      = b.Add("red")
+		_      = b.Add("green")
+		_      = b.Add("blue")
+		Colors = b.Enum()
 	)
 
 	members := Colors.Members()
 	fmt.Println(members)
-	// Output: [{red} {green} {blue}]
+	// Output: [red green blue]
 }
 
 func ExampleEnum_Values() {
-	type Color enum.Member[string]
 
+	type Color struct {
+		enum.Member
+	}
 	var (
-		Red    = Color{"red"}
-		Green  = Color{"green"}
-		Blue   = Color{"blue"}
-		Colors = enum.New(Red, Green, Blue)
+		b      = enum.NewBuilder[Color]()
+		_      = b.Add("red")
+		_      = b.Add("green")
+		_      = b.Add("blue")
+		Colors = b.Enum()
 	)
 
 	values := Colors.Values()
@@ -169,28 +203,15 @@ func ExampleEnum_Values() {
 	// Output: [red green blue]
 }
 
-func ExampleEnum_TypeName() {
-	type Color enum.Member[string]
-
-	var (
-		Red    = Color{"red"}
-		Green  = Color{"green"}
-		Blue   = Color{"blue"}
-		Colors = enum.New(Red, Green, Blue)
-	)
-
-	tname := Colors.TypeName()
-	fmt.Println(tname)
-	// Output: string
-}
-
 func ExampleNewBuilder() {
-	type Color enum.Member[string]
+	type Color struct {
+		enum.Member
+	}
 	var (
-		b      = enum.NewBuilder[string, Color]()
-		Red    = b.Add(Color{"red"})
-		Green  = b.Add(Color{"green"})
-		Blue   = b.Add(Color{"blue"})
+		b      = enum.NewBuilder[Color]()
+		Red    = b.Add("red")
+		Green  = b.Add("green")
+		Blue   = b.Add("blue")
 		Colors = b.Enum()
 	)
 
@@ -201,28 +222,4 @@ func ExampleNewBuilder() {
 	)
 	// Output:
 	// true true true
-}
-
-type FoldedString string
-
-// Equal implements [enum.Equaler].
-//
-// Compare strings ignoring the case.
-func (s FoldedString) Equal(other FoldedString) bool {
-	return strings.EqualFold(string(s), string(other))
-}
-
-func ExampleParse() {
-	type Color enum.Member[FoldedString]
-
-	var (
-		Red    = Color{"red"}
-		Green  = Color{"green"}
-		Blue   = Color{"blue"}
-		Colors = enum.New(Red, Green, Blue)
-	)
-
-	parsed := enum.Parse(Colors, "RED")
-	fmt.Printf("%#v\n", parsed)
-	// Output: &enum_test.Color{Value:"red"}
 }

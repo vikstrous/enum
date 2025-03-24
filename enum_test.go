@@ -1,49 +1,69 @@
 package enum_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/matryer/is"
 	"github.com/orsinium-labs/enum"
 )
 
-type Color enum.Member[string]
+type Color struct {
+	enum.Member
+}
+
+var colorBuilder = enum.NewBuilder[Color]()
+
+func (Color) Enum() enum.Enum[Color] {
+	return Colors
+}
 
 var (
-	Red    = Color{"red"}
-	Green  = Color{"green"}
-	Blue   = Color{"blue"}
-	Colors = enum.New(Red, Green, Blue)
+	Red    = colorBuilder.Add("red")
+	Green  = colorBuilder.Add("green")
+	Blue   = colorBuilder.Add("blue")
+	Colors = colorBuilder.Enum()
 )
 
-func TestMember_Value(t *testing.T) {
+func TestMember_String(t *testing.T) {
 	is := is.New(t)
-	is.Equal(Red.Value, "red")
-	is.Equal(Green.Value, "green")
-	is.Equal(Blue.Value, "blue")
-	is.Equal(enum.Member[string]{"blue"}.Value, "blue")
-	is.Equal(enum.Member[int]{14}.Value, 14)
+	is.Equal(Red.String(), "red")
+	is.Equal(Green.String(), "green")
+	is.Equal(Blue.String(), "blue")
+}
+
+func TestMember_Print(t *testing.T) {
+	is := is.New(t)
+	is.Equal(fmt.Sprint(Red), "red")
 }
 
 func TestEnum_Parse(t *testing.T) {
 	is := is.New(t)
-	var parsed *Color
-	parsed = Colors.Parse("red")
-	is.Equal(parsed, &Red)
-	parsed = Colors.Parse("purple")
-	is.Equal(parsed, nil)
+	parsed, err := Colors.Parse("red")
+	is.NoErr(err)
+	is.Equal(parsed, Red)
+	parsed, err = Colors.Parse("purple")
+	if err == nil {
+		is.Fail()
+	}
+	is.Equal(parsed, Color{})
 }
 
 func TestEnum_Empty(t *testing.T) {
 	is := is.New(t)
 	is.True(!Colors.Empty())
-	is.True(enum.New[int, enum.Member[int]]().Empty())
+
+	b := enum.NewBuilder[Color]()
+	newEnum := b.Enum()
+	is.True(newEnum.Empty())
 }
 
 func TestEnum_Len(t *testing.T) {
 	is := is.New(t)
 	is.Equal(Colors.Len(), 3)
-	is.Equal(enum.New[int, enum.Member[int]]().Len(), 0)
+	b := enum.NewBuilder[Color]()
+	newEnum := b.Enum()
+	is.Equal(newEnum.Len(), 0)
 }
 
 func TestEnum_Contains(t *testing.T) {
@@ -51,10 +71,8 @@ func TestEnum_Contains(t *testing.T) {
 	is.True(Colors.Contains(Red))
 	is.True(Colors.Contains(Green))
 	is.True(Colors.Contains(Blue))
-	blue := Color{"blue"}
-	is.True(Colors.Contains(blue))
-	purple := Color{"purple"}
-	is.True(!Colors.Contains(purple))
+	empty := Color{}
+	is.True(!Colors.Contains(empty))
 }
 
 func TestEnum_Members(t *testing.T) {
@@ -63,101 +81,53 @@ func TestEnum_Members(t *testing.T) {
 	is.Equal(Colors.Members(), exp)
 }
 
-func TestEnum_Choice(t *testing.T) {
-	is := is.New(t)
-	// Select a random color
-	m := Colors.Choice(0)
-	is.True(m != nil)
-	is.True(Colors.Contains(*m))
-	// Select a specific color using a specific random seed
-	m = Colors.Choice(254)
-	is.True(m != nil)
-	is.Equal(*m, Red)
-	// Select a specific color using a specific random seed
-	m = Colors.Choice(1337)
-	is.True(m != nil)
-	is.Equal(*m, Green)
-	// Select a specific color using a specific random seed
-	m = Colors.Choice(42)
-	is.True(m != nil)
-	is.Equal(*m, Blue)
-	// Selecting a random member from an empty Enum returns nil
-	emptyEnums := enum.New[string, Color]()
-	is.True(emptyEnums.Choice(0) == nil)
-}
-
 func TestEnum_Values(t *testing.T) {
 	is := is.New(t)
 	exp := []string{"red", "green", "blue"}
 	is.Equal(Colors.Values(), exp)
 }
 
-func TestEnum_Value(t *testing.T) {
-	is := is.New(t)
-	is.Equal(Colors.Value(Red), "red")
-}
-
 func TestEnum_Index(t *testing.T) {
 	is := is.New(t)
-	is.Equal(Colors.Index(Red), 0)
-	is.Equal(Colors.Index(Green), 1)
-	is.Equal(Colors.Index(Blue), 2)
+	is.Equal(Red.Index(), 0)
+	is.Equal(Green.Index(), 1)
+	is.Equal(Blue.Index(), 2)
 }
 
 func TestEnum_Index_Panic(t *testing.T) {
 	is := is.New(t)
 	defer func() {
 		r := recover()
-		is.Equal(r, "the given Member does not belong to this Enum")
+		is.Equal(r, "uninitialized enum value")
 	}()
-	Colors.Index(Color{"purple"})
+	Color{}.Index()
 }
 
 func TestBuilder(t *testing.T) {
 	is := is.New(t)
-	type Country enum.Member[string]
+	type Country struct {
+		enum.Member
+	}
 	var (
-		b         = enum.NewBuilder[string, Country]()
-		NL        = b.Add(Country{"Netherlands"})
-		FR        = b.Add(Country{"France"})
-		BE        = b.Add(Country{"Belgium"})
+		b         = enum.NewBuilder[Country]()
+		NL        = b.Add("Netherlands")
+		FR        = b.Add("France")
+		BE        = b.Add("Belgium")
 		Countries = b.Enum()
 	)
 	is.Equal(Countries.Members(), []Country{NL, FR, BE})
-}
-
-type BookValue struct {
-	Title string
-	ISBN  string
-}
-
-type Book enum.Member[BookValue]
-
-var (
-	EfficientGo     = Book{BookValue{"Efficient Go", "978-1098105716"}}
-	ConcurrencyInGo = Book{BookValue{"Concurrency in Go", "978-1491941195"}}
-	Books           = enum.New(EfficientGo, ConcurrencyInGo)
-)
-
-func (b BookValue) Equal(v BookValue) bool {
-	return b.ISBN == v.ISBN
-}
-
-func TestParse(t *testing.T) {
-	is := is.New(t)
-	tests := []struct {
-		isbn string
-		want *Book
-	}{
-		{"978-1098105716", &EfficientGo},
-		{"978-1491941195", &ConcurrencyInGo},
-		{"invalid-isbn", nil},
-	}
-	for _, tt := range tests {
-		t.Run(tt.isbn, func(t *testing.T) {
-			v := BookValue{ISBN: tt.isbn}
-			got := enum.Parse(Books, v)
-			is.Equal(got, tt.want)
-		})
-	}
+	func() {
+		defer func() {
+			r := recover()
+			is.Equal(r, "no more members can be added at run time")
+		}()
+		_ = b.Add("Other")
+	}()
+	func() {
+		defer func() {
+			r := recover()
+			is.Equal(r, "build used to create multiple enums")
+		}()
+		_ = b.Enum()
+	}()
 }
