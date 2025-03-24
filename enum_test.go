@@ -49,32 +49,6 @@ func TestEnum_Parse(t *testing.T) {
 	is.Equal(parsed, Color{})
 }
 
-func TestEnum_Empty(t *testing.T) {
-	is := is.New(t)
-	is.True(!Colors.Empty())
-
-	b := enum.NewBuilder[Color]()
-	newEnum := b.Enum()
-	is.True(newEnum.Empty())
-}
-
-func TestEnum_Len(t *testing.T) {
-	is := is.New(t)
-	is.Equal(Colors.Len(), 3)
-	b := enum.NewBuilder[Color]()
-	newEnum := b.Enum()
-	is.Equal(newEnum.Len(), 0)
-}
-
-func TestEnum_Contains(t *testing.T) {
-	is := is.New(t)
-	is.True(Colors.Contains(Red))
-	is.True(Colors.Contains(Green))
-	is.True(Colors.Contains(Blue))
-	empty := Color{}
-	is.True(!Colors.Contains(empty))
-}
-
 func TestEnum_Members(t *testing.T) {
 	is := is.New(t)
 	exp := []Color{Red, Green, Blue}

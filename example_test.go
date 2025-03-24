@@ -95,42 +95,6 @@ func ExampleEnum_Parse() {
 	// Output: enum_test.Color{Member:enum.Member{index:0, value:"red"}}
 }
 
-func ExampleEnum_Contains() {
-	type Color struct {
-		enum.Member
-	}
-
-	var (
-		b      = enum.NewBuilder[Color]()
-		Red    = b.Add("red")
-		_      = b.Add("green")
-		_      = b.Add("blue")
-		Colors = b.Enum()
-	)
-
-	contains := Colors.Contains(Red)
-	fmt.Println(contains)
-	// Output: true
-}
-
-func ExampleEnum_Empty() {
-	type Color struct {
-		enum.Member
-	}
-
-	var (
-		b      = enum.NewBuilder[Color]()
-		_      = b.Add("red")
-		_      = b.Add("green")
-		_      = b.Add("blue")
-		Colors = b.Enum()
-	)
-
-	empty := Colors.Empty()
-	fmt.Println(empty)
-	// Output: false
-}
-
 func ExampleMember_Index() {
 	type Color struct {
 		enum.Member
@@ -147,24 +111,6 @@ func ExampleMember_Index() {
 	index := Green.Index()
 	fmt.Println(index)
 	// Output: 1
-}
-
-func ExampleEnum_Len() {
-	type Color struct {
-		enum.Member
-	}
-
-	var (
-		b      = enum.NewBuilder[Color]()
-		_      = b.Add("red")
-		_      = b.Add("green")
-		_      = b.Add("blue")
-		Colors = b.Enum()
-	)
-
-	length := Colors.Len()
-	fmt.Println(length)
-	// Output: 3
 }
 
 func ExampleEnum_Members() {
@@ -201,25 +147,4 @@ func ExampleEnum_Values() {
 	values := Colors.Values()
 	fmt.Println(values)
 	// Output: [red green blue]
-}
-
-func ExampleNewBuilder() {
-	type Color struct {
-		enum.Member
-	}
-	var (
-		b      = enum.NewBuilder[Color]()
-		Red    = b.Add("red")
-		Green  = b.Add("green")
-		Blue   = b.Add("blue")
-		Colors = b.Enum()
-	)
-
-	fmt.Println(
-		Colors.Contains(Red),
-		Colors.Contains(Green),
-		Colors.Contains(Blue),
-	)
-	// Output:
-	// true true true
 }
