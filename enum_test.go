@@ -12,17 +12,12 @@ type Color struct {
 	enum.Member
 }
 
-var colorBuilder = enum.NewBuilder[Color]()
-
-func (Color) Enum() enum.Enum[Color] {
-	return Colors
-}
-
 var (
-	Red    = colorBuilder.Add("red")
-	Green  = colorBuilder.Add("green")
-	Blue   = colorBuilder.Add("blue")
-	Colors = colorBuilder.Enum()
+	b = enum.NewBuilder[Color]()
+	Red    = b.Add("red")
+	Green  = b.Add("green")
+	Blue   = b.Add("blue")
+	Colors = b.Enum()
 )
 
 func TestMember_String(t *testing.T) {
