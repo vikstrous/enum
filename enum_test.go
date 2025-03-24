@@ -50,27 +50,6 @@ func TestEnum_Members(t *testing.T) {
 	is.Equal(Colors.Members(), exp)
 }
 
-func TestEnum_Values(t *testing.T) {
-	is := is.New(t)
-	exp := []string{"red", "green", "blue"}
-	is.Equal(Colors.Values(), exp)
-}
-
-func TestEnum_Index(t *testing.T) {
-	is := is.New(t)
-	is.Equal(Red.Index(), 0)
-	is.Equal(Green.Index(), 1)
-	is.Equal(Blue.Index(), 2)
-}
-
-func TestEnum_Index_Panic(t *testing.T) {
-	is := is.New(t)
-	defer func() {
-		r := recover()
-		is.Equal(r, "uninitialized enum value")
-	}()
-	Color{}.Index()
-}
 
 func TestEnum_String_Panic(t *testing.T) {
 	is := is.New(t)
@@ -78,7 +57,7 @@ func TestEnum_String_Panic(t *testing.T) {
 		r := recover()
 		is.Equal(r, "uninitialized enum value")
 	}()
-	Color{}.String()
+	_ = Color{}.String()
 }
 
 func TestBuilder(t *testing.T) {

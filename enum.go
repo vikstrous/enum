@@ -7,7 +7,6 @@ import (
 
 // Member is an enum member, a specific value bound to a variable.
 type Member struct {
-	index int
 	value string
 }
 
@@ -16,13 +15,6 @@ func (m Member) String() string {
 		panic("uninitialized enum value")
 	}
 	return m.value
-}
-
-func (m Member) Index() int {
-	if m.value == "" {
-		panic("uninitialized enum value")
-	}
-	return m.index
 }
 
 // iMember is the type constraint for Member used by Enum.
@@ -52,7 +44,7 @@ type Enum[M isMemberWrapper] struct {
 func (e Enum[M]) Parse(value string) (M, error) {
 	for i, m := range e.memberStrings {
 		if m == value {
-			return M{Member: Member{i, m}}, nil
+			return e.members[i], nil
 		}
 	}
 
@@ -83,7 +75,7 @@ func (e Enum[M]) String() string {
 func (e Enum[M]) GoString() string {
 	values := make([]string, 0, len(e.memberStrings))
 	for i, m := range e.memberStrings {
-		values = append(values, fmt.Sprintf("%T{%#v}", M{Member: Member{i, m}}, m))
+		values = append(values, fmt.Sprintf("%T{%#v}", e.members[i], m))
 	}
 	joined := strings.Join(values, ", ")
 	return fmt.Sprintf("enum.New(%s)", joined)
@@ -114,9 +106,8 @@ func (b *Builder[M]) Add(v string) M {
 	if b.finished {
 		panic("no more members can be added at run time")
 	}
-	i := len(b.memberStrings)
 	b.memberStrings = append(b.memberStrings, v)
-	m := M{Member: Member{i, v}}
+	m := M{Member: Member{v}}
 	b.members = append(b.members, m)
 	return m
 }
