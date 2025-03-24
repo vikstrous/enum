@@ -27,7 +27,7 @@ func ExampleBuilder() {
 		panic(err)
 	}
 	fmt.Printf("Parsed: %s\n", parsed.String())
-	// Output: Enum: [red green blue]
+	// Output: Enum Members: [red green blue]
 	// Enum string: red, green, blue
 	// Member string: green
 	// Parsed: red
