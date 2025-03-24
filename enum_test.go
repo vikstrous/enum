@@ -27,6 +27,11 @@ func TestMember_String(t *testing.T) {
 	is.Equal(Blue.String(), "blue")
 }
 
+func TestMember_GoString(t *testing.T) {
+	is := is.New(t)
+	is.Equal(fmt.Sprintf("%#v", Colors), `enum{enum_test.Color{"red"}, enum_test.Color{"green"}, enum_test.Color{"blue"}}`)
+}
+
 func TestMember_Print(t *testing.T) {
 	is := is.New(t)
 	is.Equal(fmt.Sprint(Red), "red")
@@ -49,7 +54,6 @@ func TestEnum_Members(t *testing.T) {
 	exp := []Color{Red, Green, Blue}
 	is.Equal(Colors.Members(), exp)
 }
-
 
 func TestEnum_String_Panic(t *testing.T) {
 	is := is.New(t)

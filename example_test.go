@@ -13,7 +13,7 @@ func ExampleBuilder() {
 
 	var (
 		b      = enum.NewBuilder[Color]()
-		_      = b.Add("red")
+		Red    = b.Add("red")
 		Green  = b.Add("green")
 		_      = b.Add("blue")
 		Colors = b.Enum()
@@ -27,8 +27,10 @@ func ExampleBuilder() {
 		panic(err)
 	}
 	fmt.Printf("Parsed: %s\n", parsed.String())
+	fmt.Printf("Equality: %t\n", Red == parsed)
 	// Output: Enum Members: [red green blue]
 	// Enum string: red, green, blue
 	// Member string: green
 	// Parsed: red
+	// Equality: true
 }

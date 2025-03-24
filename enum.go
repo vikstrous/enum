@@ -73,7 +73,7 @@ func (e Enum[M]) GoString() string {
 		values = append(values, fmt.Sprintf("%T{%#v}", e.members[i], m))
 	}
 	joined := strings.Join(values, ", ")
-	return fmt.Sprintf("enum.New(%s)", joined)
+	return fmt.Sprintf("enum{%s}", joined)
 }
 
 // Builder is a constructor for an [Enum].
