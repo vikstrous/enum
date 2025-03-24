@@ -77,6 +77,15 @@ func TestEnum_Index_Panic(t *testing.T) {
 	Color{}.Index()
 }
 
+func TestEnum_String_Panic(t *testing.T) {
+	is := is.New(t)
+	defer func() {
+		r := recover()
+		is.Equal(r, "uninitialized enum value")
+	}()
+	Color{}.String()
+}
+
 func TestBuilder(t *testing.T) {
 	is := is.New(t)
 	type Country struct {
